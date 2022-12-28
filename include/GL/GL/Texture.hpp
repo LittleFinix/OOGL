@@ -198,6 +198,7 @@ namespace GL
 	public:
 		Texture();
 		Texture( const Texture& other );
+		Texture( const GLvoid* data, DataType::data_type_t type, Format::format_t format, uint width, uint height, InternalFormat::internal_format_t internalFormat );
 		Texture( const Image& image, InternalFormat::internal_format_t internalFormat = InternalFormat::RGBA );
 
 		~Texture();

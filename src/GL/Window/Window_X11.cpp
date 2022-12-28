@@ -280,25 +280,31 @@ namespace GL
 					width = event.xconfigure.width;
 					height = event.xconfigure.height;
 
-					if ( events.empty() ) {
+					if (context) {
+						context->defaultViewport[2] = width;
+						context->defaultViewport[3] = height;
+					}
+
+					if ( !events.empty() && events.back().Type == Event::Resize ) {
+						events.back().Window.Width = width;
+						events.back().Window.Height = height;
+					} else {
 						ev.Type = Event::Resize;
 						ev.Window.Width = width;
 						ev.Window.Height = height;
-					} else if ( events.back().Type == Event::Resize ) {
-						events.back().Window.Width = width;
-						events.back().Window.Height = height;
 					}
+
 				} else if ( event.xconfigure.x != x || event.xconfigure.y != y ) {
 					x = event.xconfigure.x;
 					y = event.xconfigure.y;
 
-					if ( events.empty() ) {
+					if ( !events.empty() && events.back().Type == Event::Resize ) {
+						events.back().Window.X = x;
+						events.back().Window.Y = y;
+					} else {
 						ev.Type = Event::Move;
 						ev.Window.X = x;
 						ev.Window.Y = y;
-					} else if ( events.back().Type == Event::Move ) {
-						events.back().Window.X = x;
-						events.back().Window.Y = y;
 					}
 				}
 				break;

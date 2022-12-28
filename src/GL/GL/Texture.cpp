@@ -20,6 +20,7 @@
 */
 
 #include <GL/GL/Texture.hpp>
+#include "Texture.hpp"
 
 #define PUSHSTATE() GLint restoreId; glGetIntegerv( GL_TEXTURE_BINDING_2D, &restoreId );
 #define POPSTATE() glBindTexture( GL_TEXTURE_2D, restoreId );
@@ -29,6 +30,16 @@ namespace GL
 	Texture::Texture()
 	{
 		gc.Create( obj, glGenTextures, glDeleteTextures );
+		
+		PUSHSTATE()
+
+		glBindTexture( GL_TEXTURE_2D, obj );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		
+		POPSTATE()
 	}
 
 	Texture::Texture( const Texture& other )
@@ -36,8 +47,26 @@ namespace GL
 		gc.Copy( other.obj, obj );
 	}
 
-	Texture::Texture( const Image& image, InternalFormat::internal_format_t internalFormat )
-	{
+    Texture::Texture(const GLvoid *data, DataType::data_type_t type, Format::format_t format, uint width, uint height, InternalFormat::internal_format_t internalFormat)
+    {
+		gc.Create( obj, glGenTextures, glDeleteTextures );
+		
+		PUSHSTATE()
+
+		glBindTexture( GL_TEXTURE_2D, obj );
+		glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+		glGenerateMipmap( GL_TEXTURE_2D );
+
+		POPSTATE()
+    }
+
+    Texture::Texture(const Image &image, InternalFormat::internal_format_t internalFormat)
+    {
 		PUSHSTATE()
 
 		gc.Create( obj, glGenTextures, glDeleteTextures );
