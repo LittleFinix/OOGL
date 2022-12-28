@@ -20,7 +20,6 @@
 */
 
 #include <GL/GL/Texture.hpp>
-#include "Texture.hpp"
 
 #define PUSHSTATE() GLint restoreId; glGetIntegerv( GL_TEXTURE_BINDING_2D, &restoreId );
 #define POPSTATE() glBindTexture( GL_TEXTURE_2D, restoreId );
