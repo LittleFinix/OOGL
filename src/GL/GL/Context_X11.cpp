@@ -40,37 +40,41 @@ namespace GL
 		// Load OpenGL extensions
 		LoadExtensions();
 
-		// Choose an appropriate config
-		const int pixelAttribs[] = {
-			GLX_X_RENDERABLE, GL_TRUE,
-			GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-			GLX_DOUBLEBUFFER, GL_TRUE,
-			GLX_RENDER_TYPE, GLX_RGBA_BIT,
-			GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-			GLX_BUFFER_SIZE, color,
-			GLX_DEPTH_SIZE, depth,
-			GLX_STENCIL_SIZE, stencil,
-			GLX_SAMPLE_BUFFERS, antialias > 1 ? GL_TRUE : GL_FALSE,
-			GLX_SAMPLES, antialias > 1 ? (int)antialias : 0,
-			0
-		};
+		// // Choose an appropriate config
+		// const int pixelAttribs[] = {
+		// 	GLX_X_RENDERABLE, GL_TRUE,
+		// 	GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+		// 	GLX_DOUBLEBUFFER, GL_TRUE,
+		// 	GLX_RENDER_TYPE, GLX_RGBA_BIT,
+		// 	GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+		// 	GLX_BUFFER_SIZE, color,
+		// 	GLX_DEPTH_SIZE, depth,
+		// 	GLX_STENCIL_SIZE, stencil,
+		// 	GLX_SAMPLE_BUFFERS, antialias > 1 ? GL_TRUE : GL_FALSE,
+		// 	GLX_SAMPLES, antialias > 1 ? (int)antialias : 0,
+		// 	0
+		// };
 
-		int configCount;
-		GLXFBConfig* configs = glXChooseFBConfig( display, screen, pixelAttribs, &configCount );
-		if ( configCount == 0 ) throw PixelFormatException();
-		GLXFBConfig config = configs[0];
-		XFree( configs );
+		// int configCount;
+		// GLXFBConfig* configs = glXChooseFBConfig( display, screen, pixelAttribs, &configCount );
+		// if ( configCount == 0 ) throw PixelFormatException();
+		// GLXFBConfig config = configs[0];
+		// XFree( configs );
 
-		// Create OpenGL 3.2 context
-		int attribs[] = {
-			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-			GLX_CONTEXT_MINOR_VERSION_ARB, 2,
-			GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-			0
-		};
+		// // Create OpenGL 3.2 context
+		// int attribs[] = {
+		// 	GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+		// 	GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+		// 	GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+		// 	0
+		// };
 		
 		XERRORHANDLER oldHandler = XSetErrorHandler( &XErrorSurpressor );
-			context = glXCreateContextAttribsARB( display, config, NULL, GL_TRUE, attribs );
+			// context = glXCreateContextAttribsARB( display, config, NULL, GL_TRUE, attribs );
+			int count;
+			auto vinfo = XGetVisualInfo(display, 0, nullptr, &count);
+			context = glXCreateContext( display, vinfo, nullptr, true );
+			XFree ( vinfo );
 			if ( !context ) throw VersionException();
 		XSetErrorHandler( oldHandler );
 
