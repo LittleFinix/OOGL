@@ -91,6 +91,11 @@ namespace GL
 		void SetUniform( const Uniform& uniform, const Mat3& value );
 		void SetUniform( const Uniform& uniform, const Mat4& value );
 
+		template <typename T>
+		void SetUniform( const std::string &uniform, const T& value) {
+			SetUniform(GetUniform(uniform), value);
+		}
+
 	private:
 		static GC gc;
 		GLuint obj;
