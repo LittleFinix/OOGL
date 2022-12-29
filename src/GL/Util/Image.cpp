@@ -25,8 +25,8 @@
 #endif
 
 #include <GL/Util/Image.hpp>
-#include <GL/Util/libjpeg/jpeglib.h>
-#include <GL/Util/libpng/png.h>
+#include <jpeglib.h>
+#include <png.h>
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
@@ -560,7 +560,7 @@ namespace GL
 
 	void readPNG( png_structp png_ptr, png_bytep dest, png_size_t length )
 	{
-		ByteReader& data = *(ByteReader*)png_ptr->io_ptr;
+		ByteReader& data = *(ByteReader*)png_get_io_ptr(png_ptr);
 		data.Read( dest, length );
 	}
 
@@ -576,31 +576,35 @@ namespace GL
 
 		// Header
 		png_read_info( png, info );
-		if ( info->width > USHRT_MAX ) throw FormatException();
-		if ( info->height > USHRT_MAX ) throw FormatException();
+		auto iwidth = png_get_image_width(png, info);
+		auto iheight = png_get_image_height(png, info);
+		auto color_type = png_get_color_type(png, info);
+
+		if ( iwidth > USHRT_MAX ) throw FormatException();
+		if ( iheight > USHRT_MAX ) throw FormatException();
 
 		// Pixel data
-		image = new Color[ info->width * info->height ];
+		image = new Color[ iwidth * iheight ];
 
 		png_uint_32 rowLength = png_get_rowbytes( png, info );
 		std::vector<uchar> row( rowLength );
 
-		for ( ushort y = 0; y < info->height; y++ )
+		for ( ushort y = 0; y < iheight; y++ )
 		{
 			png_read_row( png, &row[0], NULL );
 
-			if ( info->color_type == PNG_COLOR_TYPE_RGB )
-				for ( ushort x = 0; x < info->width; x++ )
-					image[ x + y * info->width ] = Color( row[x*3+0], row[x*3+1], row[x*3+2] );
-			else if ( info->color_type == PNG_COLOR_TYPE_RGBA )
-				for ( ushort x = 0; x < info->width; x++ )
-					image[ x + y * info->width ] = Color( row[x*4+0], row[x*4+1], row[x*4+2], row[x*4+3] );
+			if ( color_type == PNG_COLOR_TYPE_RGB )
+				for ( ushort x = 0; x < iwidth; x++ )
+					image[ x + y * iwidth ] = Color( row[x*3+0], row[x*3+1], row[x*3+2] );
+			else if ( color_type == PNG_COLOR_TYPE_RGBA )
+				for ( ushort x = 0; x < iwidth; x++ )
+					image[ x + y * iwidth ] = Color( row[x*4+0], row[x*4+1], row[x*4+2], row[x*4+3] );
 			else
 				throw FormatException();
 		}
 
-		width = (ushort)info->width;
-		height = (ushort)info->height;
+		width = (ushort)iwidth;
+		height = (ushort)iheight;
 
 		png_destroy_read_struct( &png, &info, NULL );
 	}
