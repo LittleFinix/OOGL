@@ -65,6 +65,7 @@ namespace GL
 		enum primitive_t
 		{
 			Triangles = GL_TRIANGLES,
+			Quads = GL_QUADS,
 			Lines = GL_LINES,
 			Points = GL_POINTS,
 		};
