@@ -78,14 +78,14 @@ lib/Image.o: src/GL/Util/Image.cpp
 lib/Mesh.o: src/GL/Util/Mesh.cpp
 	$(CC) $(CCFLAGS) -c src/GL/Util/Mesh.cpp -o lib/Mesh.o -I include -I src
 
-lib/%.o: src/GL/Util/libjpeg/%.c
-	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/libjpeg/%.c,lib/%.o,$<)
+# lib/%.o: src/GL/Util/libjpeg/%.c
+# 	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/libjpeg/%.c,lib/%.o,$<)
 
-lib/%.o: src/GL/Util/libpng/%.c
-	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/libpng/%.c,lib/%.o,$<)
+# lib/%.o: src/GL/Util/libpng/%.c
+# 	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/libpng/%.c,lib/%.o,$<)
 
-lib/%.o: src/GL/Util/zlib/%.c
-	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/zlib/%.c,lib/%.o,$<)
+# lib/%.o: src/GL/Util/zlib/%.c
+# 	$(CCC) -O3 -c $< -o $(patsubst src/GL/Util/zlib/%.c,lib/%.o,$<)
 
 # Binaries folder
 lib:
